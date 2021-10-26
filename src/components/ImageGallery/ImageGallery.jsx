@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 // component import
 import { PixabayApi } from '../../services';
@@ -66,6 +67,12 @@ class ImageGallery extends Component {
   renderImages = () => {
     try {
       pixabayApi.fetchImages().then(fetchedImages => {
+        // alert on empty arrays
+        if (fetchedImages.hits.length === 0) {
+          toast.error('Nothing found! Please enter the correct query!');
+          return;
+        }
+
         this.setState(prevState => {
           return {
             imageArray: [...prevState.imageArray, ...fetchedImages.hits],
@@ -141,10 +148,17 @@ class ImageGallery extends Component {
             </ul>
 
             {showModal && (
-              <Modal alt={imageAlt} url={largeImageUrl} onClose={toggleModal} />
+              <Modal
+                alt={imageAlt}
+                url={largeImageUrl}
+                onClose={toggleModal}
+                imgArr={imageArray}
+              />
             )}
 
-            <Button onClick={loadMoreBtnClickHandler} />
+            {imageArray.length !== 0 && (
+              <Button onClick={loadMoreBtnClickHandler} />
+            )}
           </>
         );
       case 'rejected':

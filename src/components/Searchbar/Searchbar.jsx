@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 class Searchbar extends Component {
   constructor() {
@@ -28,7 +29,7 @@ class Searchbar extends Component {
     } = this;
 
     if (query.trim() === '') {
-      return alert('Please enter the search query!');
+      return toast.error('Please enter the search query!');
     }
 
     props.onSubmit(query);
