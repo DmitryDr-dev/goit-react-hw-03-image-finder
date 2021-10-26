@@ -2,6 +2,7 @@ import { Component } from 'react';
 
 // component import
 import Searchbar from './components/Searchbar';
+import ImageGallery from './components/ImageGallery';
 
 class App extends Component {
   constructor() {
@@ -18,9 +19,15 @@ class App extends Component {
   };
 
   render() {
+    const {
+      state: { searchQuery },
+      formSubmitHandler,
+    } = this;
+
     return (
       <>
-        <Searchbar onSubmit={this.formSubmitHandler} />
+        <Searchbar onSubmit={formSubmitHandler} />
+        <ImageGallery query={searchQuery} />
       </>
     );
   }
