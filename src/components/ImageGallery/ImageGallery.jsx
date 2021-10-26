@@ -2,11 +2,13 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 
+import './ImageGallery.css';
 // component import
 import { PixabayApi } from '../../services';
 import ImageGalleryItem from '../ImageGalleryItem';
 import Modal from '../Modal/';
 import Button from '../Button';
+import LoaderComponent from '../Loader';
 
 const pixabayApi = new PixabayApi();
 
@@ -126,9 +128,9 @@ class ImageGallery extends Component {
 
     switch (status) {
       case 'idle':
-        return <div className="">Enter smth</div>;
+        return null;
       case 'pending':
-        return <div className="">Wait</div>;
+        return <LoaderComponent />;
       case 'resolved':
         return (
           <>
@@ -157,12 +159,16 @@ class ImageGallery extends Component {
             )}
 
             {imageArray.length !== 0 && (
-              <Button onClick={loadMoreBtnClickHandler} />
+              <div className="Button-wrap">
+                <Button onClick={loadMoreBtnClickHandler} />
+              </div>
             )}
           </>
         );
       case 'rejected':
-        return <div className="">Ooops</div>;
+        return toast.error(
+          "Okay, Houston, we've got a problem here. Please try again later",
+        );
       default:
         return;
     }

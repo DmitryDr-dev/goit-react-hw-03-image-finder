@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import './App.css';
 // component import
 import Searchbar from './components/Searchbar';
 import ImageGallery from './components/ImageGallery';
