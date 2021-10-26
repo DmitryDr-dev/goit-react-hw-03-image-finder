@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { PixabayApi } from '../../services';
 import ImageGalleryItem from '../ImageGalleryItem';
 import Modal from '../Modal/';
+import Button from '../Button';
 
 const pixabayApi = new PixabayApi();
 
@@ -38,8 +39,12 @@ class ImageGallery extends Component {
       this.setState({ status: Status.PENDING });
 
       try {
+        pixabayApi.page = 1;
         pixabayApi.query = newQuery;
-        this.fetchImages();
+        this.setState({
+          imageArray: [],
+        });
+        this.renderImages();
       } catch (error) {
         this.setState({ status: Status.REJECTED });
         console.log("Okay, Houston, we've got a problem here", error.message);
@@ -57,15 +62,20 @@ class ImageGallery extends Component {
     this.toggleModal();
   };
 
-  // function to fetch images
-  fetchImages = () => {
+  // function to fetch images & update current state
+  renderImages = () => {
     try {
-      pixabayApi.fetchImages().then(fetchedImages =>
-        this.setState({
-          imageArray: fetchedImages.hits,
-          status: Status.RESOLVED,
-        }),
-      );
+      pixabayApi.fetchImages().then(fetchedImages => {
+        this.setState(prevState => {
+          return {
+            imageArray: [...prevState.imageArray, ...fetchedImages.hits],
+            status: Status.RESOLVED,
+          };
+        });
+
+        // smooth scrolling
+        this.smoothScrolling();
+      });
     } catch (error) {
       this.setState({ status: Status.REJECTED });
       console.log("Okay, Houston, we've got a problem here", error.message);
@@ -81,11 +91,30 @@ class ImageGallery extends Component {
     });
   };
 
+  // function to render more images by click on load more button
+  loadMoreBtnClickHandler = () => {
+    try {
+      pixabayApi.page += 1;
+      this.renderImages();
+    } catch (error) {
+      this.setState({ status: Status.REJECTED });
+      console.log("Okay, Houston, we've got a problem here:", error.message);
+    }
+  };
+
+  smoothScrolling() {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
+  }
+
   render() {
     const {
       state: { imageArray, status, showModal, imageAlt, largeImageUrl },
       imageClickHandler,
       toggleModal,
+      loadMoreBtnClickHandler,
     } = this;
 
     switch (status) {
@@ -114,6 +143,8 @@ class ImageGallery extends Component {
             {showModal && (
               <Modal alt={imageAlt} url={largeImageUrl} onClose={toggleModal} />
             )}
+
+            <Button onClick={loadMoreBtnClickHandler} />
           </>
         );
       case 'rejected':

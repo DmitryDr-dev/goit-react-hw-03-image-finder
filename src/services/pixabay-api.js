@@ -9,7 +9,6 @@ export class PixabayApi {
   }
 
   // searchQuery getter
-
   get query() {
     return this.searchQuery;
   }
@@ -17,6 +16,14 @@ export class PixabayApi {
   // searchQuery setter
   set query(newSearchQuery) {
     this.searchQuery = newSearchQuery;
+  }
+
+  get page() {
+    return this.pageNumber;
+  }
+
+  set page(newPage) {
+    this.pageNumber = newPage;
   }
 
   async fetchImages() {
